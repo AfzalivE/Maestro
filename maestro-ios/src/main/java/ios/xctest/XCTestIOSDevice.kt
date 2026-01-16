@@ -94,6 +94,27 @@ class XCTestIOSDevice(
         }
     }
 
+    override fun dragAndDrop(
+        xStart: Double,
+        yStart: Double,
+        xEnd: Double,
+        yEnd: Double,
+        duration: Double,
+        holdDuration: Double,
+    ) {
+        execute {
+            client.dragAndDrop(
+                installedApps = emptySet(),
+                startX = xStart,
+                startY = yStart,
+                endX = xEnd,
+                endY = yEnd,
+                duration = duration,
+                holdDuration = holdDuration,
+            )
+        }
+    }
+
     fun scrollV2(
         xStart: Double,
         yStart: Double,

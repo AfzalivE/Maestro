@@ -334,6 +334,7 @@ class Orchestra(
             is ScrollUntilVisibleCommand -> scrollUntilVisible(command)
             is PasteTextCommand -> pasteText()
             is SwipeCommand -> swipeCommand(command)
+            is DragAndDropCommand -> dragAndDropCommand(command)
             is AssertCommand -> assertCommand(command)
             is AssertConditionCommand -> assertConditionCommand(command)
             is AssertNoDefectsWithAICommand -> assertNoDefectsWithAICommand(command, maestroCommand)
@@ -1428,6 +1429,21 @@ class Orchestra(
 
             else -> error("Illegal arguments for swiping")
         }
+        return true
+    }
+
+    private fun dragAndDropCommand(command: DragAndDropCommand): Boolean {
+        val fromElement = findElement(command.from, optional = command.optional)
+        val toElement = findElement(command.to, optional = command.optional)
+
+        maestro.dragAndDrop(
+            startPoint = fromElement.element.bounds.center(),
+            endPoint = toElement.element.bounds.center(),
+            durationMs = command.duration,
+            holdDurationMs = command.holdDurationMs,
+            waitToSettleTimeoutMs = command.waitToSettleTimeoutMs
+        )
+
         return true
     }
 

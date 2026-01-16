@@ -66,6 +66,7 @@ import maestro.orchestra.StartRecordingCommand
 import maestro.orchestra.StopAppCommand
 import maestro.orchestra.StopRecordingCommand
 import maestro.orchestra.SwipeCommand
+import maestro.orchestra.DragAndDropCommand
 import maestro.orchestra.TakeScreenshotCommand
 import maestro.orchestra.TapOnElementCommand
 import maestro.orchestra.TapOnPointV2Command
@@ -113,6 +114,7 @@ data class YamlFluentCommand(
     val launchApp: YamlLaunchApp? = null,
     val setPermissions: YamlSetPermissions? = null,
     val swipe: YamlSwipe? = null,
+    val dragAndDrop: YamlDragAndDrop? = null,
     val openLink: YamlOpenLink? = null,
     val openBrowser: String? = null,
     val pressKey: YamlPressKey? = null,
@@ -238,6 +240,7 @@ data class YamlFluentCommand(
             inputRandomCountryName != null -> listOf(MaestroCommand(InputRandomCommand(inputType = InputRandomType.TEXT_COUNTRY_NAME, label = inputRandomCountryName.label, optional = inputRandomCountryName.optional)))
             inputRandomColorName != null -> listOf(MaestroCommand(InputRandomCommand(inputType = InputRandomType.TEXT_COLOR, label = inputRandomColorName.label, optional = inputRandomColorName.optional)))
 
+            dragAndDrop != null -> listOf(dragAndDropCommand(dragAndDrop))
             swipe != null -> listOf(swipeCommand(swipe))
             openLink != null -> listOf(
                 MaestroCommand(
@@ -867,6 +870,23 @@ data class YamlFluentCommand(
                 )
             }
         }
+    }
+
+    private fun dragAndDropCommand(dragAndDrop: YamlDragAndDrop): MaestroCommand {
+        val fromSelector = toElementSelector(dragAndDrop.from)
+        val toSelector = toElementSelector(dragAndDrop.to)
+
+        return MaestroCommand(
+            DragAndDropCommand(
+                from = fromSelector,
+                to = toSelector,
+                duration = dragAndDrop.duration ?: DragAndDropCommand.DEFAULT_DURATION_IN_MILLIS,
+                holdDurationMs = dragAndDrop.holdDurationMs ?: DragAndDropCommand.DEFAULT_HOLD_DURATION_IN_MILLIS,
+                label = dragAndDrop.label,
+                optional = dragAndDrop.optional,
+                waitToSettleTimeoutMs = dragAndDrop.waitToSettleTimeoutMs
+            )
+        )
     }
 
     private fun swipeElementCommand(swipeElement: YamlSwipeElement): MaestroCommand {

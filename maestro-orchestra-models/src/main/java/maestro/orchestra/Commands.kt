@@ -96,6 +96,33 @@ data class SwipeCommand(
     }
 }
 
+data class DragAndDropCommand(
+    val from: ElementSelector,
+    val to: ElementSelector,
+    val duration: Long = DEFAULT_DURATION_IN_MILLIS,
+    val holdDurationMs: Long = DEFAULT_HOLD_DURATION_IN_MILLIS,
+    val waitToSettleTimeoutMs: Int? = null,
+    override val label: String? = null,
+    override val optional: Boolean = false,
+) : Command {
+
+    override val originalDescription: String
+        get() = "Drag ${from.description()} to ${to.description()} in $duration ms"
+
+    override fun evaluateScripts(jsEngine: JsEngine): DragAndDropCommand {
+        return copy(
+            from = from.evaluateScripts(jsEngine),
+            to = to.evaluateScripts(jsEngine),
+            label = label?.evaluateScripts(jsEngine),
+        )
+    }
+
+    companion object {
+        const val DEFAULT_DURATION_IN_MILLIS = 600L
+        const val DEFAULT_HOLD_DURATION_IN_MILLIS = 300L
+    }
+}
+
 /**
  * @param visibilityPercentage 0-1 Visibility within viewport bounds. 0 not within viewport and 1 fully visible within viewport.
  */

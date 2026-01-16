@@ -33,6 +33,7 @@ data class MaestroCommand(
     val tapOnPointV2Command: TapOnPointV2Command? = null,
     val scrollCommand: ScrollCommand? = null,
     val swipeCommand: SwipeCommand? = null,
+    val dragAndDropCommand: DragAndDropCommand? = null,
     val backPressCommand: BackPressCommand? = null,
     @Deprecated("Use assertConditionCommand") val assertCommand: AssertCommand? = null,
     val assertConditionCommand: AssertConditionCommand? = null,
@@ -80,6 +81,7 @@ data class MaestroCommand(
         tapOnPointV2Command = command as? TapOnPointV2Command,
         scrollCommand = command as? ScrollCommand,
         swipeCommand = command as? SwipeCommand,
+        dragAndDropCommand = command as? DragAndDropCommand,
         backPressCommand = command as? BackPressCommand,
         assertCommand = command as? AssertCommand,
         assertConditionCommand = command as? AssertConditionCommand,
@@ -127,6 +129,7 @@ data class MaestroCommand(
         tapOnPointV2Command != null -> tapOnPointV2Command
         scrollCommand != null -> scrollCommand
         swipeCommand != null -> swipeCommand
+        dragAndDropCommand != null -> dragAndDropCommand
         backPressCommand != null -> backPressCommand
         assertCommand != null -> assertCommand
         assertConditionCommand != null -> assertConditionCommand
@@ -173,6 +176,7 @@ data class MaestroCommand(
         return when {
             tapOnElement?.selector != null -> tapOnElement.selector
             swipeCommand?.elementSelector != null -> swipeCommand.elementSelector
+            dragAndDropCommand?.from != null -> dragAndDropCommand.from
             copyTextCommand?.selector != null -> copyTextCommand.selector
             assertConditionCommand?.condition?.visible != null -> assertConditionCommand.condition.visible
             assertConditionCommand?.condition?.notVisible != null -> assertConditionCommand.condition.notVisible

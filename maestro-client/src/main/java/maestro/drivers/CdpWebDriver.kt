@@ -446,6 +446,33 @@ class CdpWebDriver(
         swipe(direction, durationMs)
     }
 
+    override fun dragAndDrop(start: Point, end: Point, durationMs: Long, holdDurationMs: Long) {
+        val driver = ensureOpen()
+
+        val finger = PointerInput(PointerInput.Kind.TOUCH, "finger")
+        val drag = Sequence(finger, 1)
+        drag.addAction(
+            finger.createPointerMove(
+                Duration.ofMillis(0),
+                PointerInput.Origin.viewport(),
+                start.x,
+                start.y
+            )
+        )
+        drag.addAction(finger.createPointerDown(PointerInput.MouseButton.LEFT.asArg()))
+        drag.addAction(finger.createPause(Duration.ofMillis(holdDurationMs)))
+        drag.addAction(
+            finger.createPointerMove(
+                Duration.ofMillis(durationMs),
+                PointerInput.Origin.viewport(),
+                end.x,
+                end.y
+            )
+        )
+        drag.addAction(finger.createPointerUp(PointerInput.MouseButton.LEFT.asArg()))
+        (driver as RemoteWebDriver).perform(listOf(drag))
+    }
+
     override fun backPress() {
         val driver = ensureOpen()
         driver.navigate().back()

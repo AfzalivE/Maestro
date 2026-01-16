@@ -154,6 +154,18 @@ class Maestro(
         waitForAppToSettle(waitToSettleTimeoutMs = waitToSettleTimeoutMs)
     }
 
+    fun dragAndDrop(
+        startPoint: Point,
+        endPoint: Point,
+        durationMs: Long,
+        holdDurationMs: Long,
+        waitToSettleTimeoutMs: Int? = null,
+    ) {
+        LOGGER.info("Drag and drop from $startPoint to $endPoint with duration $durationMs ms and hold $holdDurationMs ms")
+        driver.dragAndDrop(startPoint, endPoint, durationMs, holdDurationMs)
+        waitForAppToSettle(waitToSettleTimeoutMs = waitToSettleTimeoutMs)
+    }
+
     fun swipeFromCenter(swipeDirection: SwipeDirection, durationMs: Long, waitToSettleTimeoutMs: Int?) {
         val deviceInfo = deviceInfo()
 

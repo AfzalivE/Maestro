@@ -234,6 +234,51 @@ internal class MaestroCommandSerializationTest {
     }
 
     @Test
+    fun `serialize DragAndDropCommand`() {
+        // given
+        val command = MaestroCommand(
+            DragAndDropCommand(
+                from = ElementSelector(textRegex = "Item"),
+                to = ElementSelector(idRegex = "target"),
+                duration = 800,
+                holdDurationMs = 200,
+                waitToSettleTimeoutMs = 1000,
+                label = "Drag item"
+            )
+        )
+
+        // when
+        val serializedCommandJson = command.toJson()
+        val deserializedCommand = objectMapper.readValue(serializedCommandJson, MaestroCommand::class.java)
+
+        // then
+        @Language("json")
+        val expectedJson = """
+            {
+              "dragAndDropCommand" : {
+                "from" : {
+                  "textRegex" : "Item",
+                  "optional" : false
+                },
+                "to" : {
+                  "idRegex" : "target",
+                  "optional" : false
+                },
+                "duration" : 800,
+                "holdDurationMs" : 200,
+                "waitToSettleTimeoutMs" : 1000,
+                "label" : "Drag item",
+                "optional" : false
+              }
+            }
+          """.trimIndent()
+        assertThat(serializedCommandJson)
+            .isEqualTo(expectedJson)
+        assertThat(deserializedCommand)
+            .isEqualTo(command)
+    }
+
+    @Test
     fun `serialize BackPressCommand`() {
         // given
         val command = MaestroCommand(

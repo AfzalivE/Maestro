@@ -215,6 +215,12 @@ class FakeDriver : Driver {
         events += Event.SwipeElementWithDirection(elementPoint, direction, durationMs)
     }
 
+    override fun dragAndDrop(start: Point, end: Point, durationMs: Long, holdDurationMs: Long) {
+        ensureOpen()
+
+        events += Event.DragAndDrop(start, end, durationMs, holdDurationMs)
+    }
+
     override fun backPress() {
         ensureOpen()
 
@@ -461,6 +467,13 @@ class FakeDriver : Driver {
             val point: Point,
             val swipeDirection: SwipeDirection,
             val durationMs: Long
+        ) : Event(), UserInteraction
+
+        data class DragAndDrop(
+            val start: Point,
+            val end: Point,
+            val durationMs: Long,
+            val holdDurationMs: Long,
         ) : Event(), UserInteraction
 
         data class LaunchApp(

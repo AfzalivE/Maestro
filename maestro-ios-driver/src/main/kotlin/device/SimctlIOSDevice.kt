@@ -59,6 +59,10 @@ class SimctlIOSDevice(
         TODO("Not yet implemented")
     }
 
+    override fun dragAndDrop(xStart: Double, yStart: Double, xEnd: Double, yEnd: Double, duration: Double, holdDuration: Double) {
+        TODO("Not yet implemented")
+    }
+
     override fun input(text: String) {
         TODO("Not yet implemented")
     }

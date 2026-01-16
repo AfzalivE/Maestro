@@ -128,6 +128,29 @@ class XCTestDriverClient(
         )
     }
 
+    fun dragAndDrop(
+        installedApps: Set<String>,
+        startX: Double,
+        startY: Double,
+        endX: Double,
+        endY: Double,
+        duration: Double,
+        holdDuration: Double,
+    ) {
+        executeJsonRequest(
+            "dragAndDrop",
+            DragRequest(
+                startX = startX,
+                startY = startY,
+                endX = endX,
+                endY = endY,
+                duration = duration,
+                holdDuration = holdDuration,
+                appIds = installedApps
+            )
+        )
+    }
+
     fun inputText(
         text: String,
         appIds: Set<String>,

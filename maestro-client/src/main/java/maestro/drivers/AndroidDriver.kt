@@ -511,6 +511,21 @@ class AndroidDriver(
         }
     }
 
+    override fun dragAndDrop(start: Point, end: Point, durationMs: Long, holdDurationMs: Long) {
+        metrics.measured("operation", mapOf("command" to "dragAndDrop")) {
+            val totalDuration = (durationMs + holdDurationMs).coerceAtLeast(1L)
+            val dragCommand = "input draganddrop ${start.x} ${start.y} ${end.x} ${end.y} $totalDuration"
+            val swipeFallback = "input swipe ${start.x} ${start.y} ${end.x} ${end.y} $totalDuration"
+
+            runCatching {
+                shell(dragCommand)
+            }.onFailure {
+                LOGGER.warn("draganddrop command failed, falling back to swipe: ${it.message}")
+                shell(swipeFallback)
+            }
+        }
+    }
+
     private fun directionalSwipe(durationMs: Long, start: Point, end: Point) {
         metrics.measured("operation", mapOf("command" to "directionalSwipe", "durationMs" to durationMs.toString())) {
             dadb.shell("input swipe ${start.x} ${start.y} ${end.x} ${end.y} $durationMs")

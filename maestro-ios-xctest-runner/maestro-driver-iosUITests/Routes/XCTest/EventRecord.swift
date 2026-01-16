@@ -37,6 +37,15 @@ final class EventRecord: NSObject {
         return add(path)
     }
 
+    func addDragEvent(start: CGPoint, end: CGPoint, holdDuration: TimeInterval, dragDuration: TimeInterval) -> Self {
+        var path = PointerEventPath.pathForTouch(at: start)
+        path.offset += holdDuration
+        path.moveTo(point: end)
+        path.offset += dragDuration
+        path.liftUp()
+        return add(path)
+    }
+
     func add(_ path: PointerEventPath) -> Self {
         let selector = NSSelectorFromString("addPointerEventPath:")
         let imp = eventRecord.method(for: selector)

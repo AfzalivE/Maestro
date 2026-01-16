@@ -352,6 +352,26 @@ class IOSDriver(
         }
     }
 
+    override fun dragAndDrop(start: Point, end: Point, durationMs: Long, holdDurationMs: Long) {
+        metrics.measured("operation", mapOf("command" to "dragAndDrop", "durationMs" to durationMs.toString(), "holdDurationMs" to holdDurationMs.toString())) {
+            val deviceInfo = deviceInfo()
+            val startPoint = start.coerceIn(maxWidth = deviceInfo.widthGrid, maxHeight = deviceInfo.heightGrid)
+            val endPoint = end.coerceIn(maxWidth = deviceInfo.widthGrid, maxHeight = deviceInfo.heightGrid)
+
+            runDeviceCall("dragAndDrop") {
+                waitForAppToSettle(null, null)
+                iosDevice.dragAndDrop(
+                    xStart = startPoint.x.toDouble(),
+                    yStart = startPoint.y.toDouble(),
+                    xEnd = endPoint.x.toDouble(),
+                    yEnd = endPoint.y.toDouble(),
+                    duration = durationMs.toDouble() / 1000,
+                    holdDuration = holdDurationMs.toDouble() / 1000,
+                )
+            }
+        }
+    }
+
     override fun backPress() {}
 
     override fun hideKeyboard() {

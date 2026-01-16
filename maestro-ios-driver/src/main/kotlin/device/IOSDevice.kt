@@ -47,6 +47,15 @@ interface IOSDevice : AutoCloseable {
         duration: Double,
     )
 
+    fun dragAndDrop(
+        xStart: Double,
+        yStart: Double,
+        xEnd: Double,
+        yEnd: Double,
+        duration: Double,
+        holdDuration: Double,
+    )
+
     /**
      * Inputs text into the currently focused element.
      */
