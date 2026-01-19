@@ -367,7 +367,7 @@ data class YamlFluentCommand(
                     )
                 )
             )
-            
+
             repeat != null -> listOf(
                 repeatCommand(repeat, flowPath, appId)
             )
@@ -761,7 +761,7 @@ data class YamlFluentCommand(
 
         return if (point != null) {
             val elementSelector = toElementSelector(tapOn)
-            
+
             // Check if we have both element selector and point - this means element-relative tap
             if (hasAnySelector(elementSelector)) {
                 MaestroCommand(
@@ -873,8 +873,15 @@ data class YamlFluentCommand(
     }
 
     private fun dragAndDropCommand(dragAndDrop: YamlDragAndDrop): MaestroCommand {
-        val fromSelector = toElementSelector(dragAndDrop.from)
-        val toSelector = toElementSelector(dragAndDrop.to)
+        if (dragAndDrop.from is YamlElementSelector && dragAndDrop.from.offset != null) {
+            throw IllegalArgumentException(
+                "The 'offset' field cannot be used in the 'from' field of dragAndDrop. " +
+                "It can only be used in the 'to' field."
+            )
+        }
+
+        val fromSelector = toElementSelector(dragAndDrop.from, allowOffset = false)
+        val toSelector = toElementSelector(dragAndDrop.to, allowOffset = true)
 
         return MaestroCommand(
             DragAndDropCommand(
@@ -902,13 +909,14 @@ data class YamlFluentCommand(
         )
     }
 
-    private fun toElementSelector(selectorUnion: YamlElementSelectorUnion): ElementSelector {
+    private fun toElementSelector(
+        selectorUnion: YamlElementSelectorUnion,
+        allowOffset: Boolean = false
+    ): ElementSelector {
         return if (selectorUnion is StringElementSelector) {
-            ElementSelector(
-                textRegex = selectorUnion.value,
-            )
+            ElementSelector(textRegex = selectorUnion.value)
         } else if (selectorUnion is YamlElementSelector) {
-            toElementSelector(selectorUnion)
+            toElementSelector(selectorUnion, allowOffset)
         } else {
             throw IllegalStateException("Unknown selector type: $selectorUnion")
         }
@@ -934,7 +942,13 @@ data class YamlFluentCommand(
                 selector.css != null
     }
 
-    private fun toElementSelector(selector: YamlElementSelector): ElementSelector {
+    private fun toElementSelector(selector: YamlElementSelector, allowOffset: Boolean = false): ElementSelector {
+        if (selector.offset != null && !allowOffset) {
+            throw IllegalArgumentException(
+                "The 'offset' field can only be used in the 'to' field of dragAndDrop commands."
+            )
+        }
+
         val size = if (selector.width != null || selector.height != null) {
             ElementSelector.SizeSelector(
                 width = selector.width,
