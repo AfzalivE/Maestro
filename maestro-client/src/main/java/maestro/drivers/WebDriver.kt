@@ -28,6 +28,7 @@ import org.openqa.selenium.TakesScreenshot
 import org.openqa.selenium.devtools.HasDevTools
 import org.openqa.selenium.devtools.v141.emulation.Emulation
 import org.openqa.selenium.interactions.Actions
+import org.openqa.selenium.interactions.Pause
 import org.openqa.selenium.interactions.PointerInput
 import org.openqa.selenium.remote.RemoteWebDriver
 import org.openqa.selenium.support.ui.WebDriverWait
@@ -401,7 +402,7 @@ class WebDriver(
             )
         )
         drag.addAction(finger.createPointerDown(PointerInput.MouseButton.LEFT.asArg()))
-        drag.addAction(finger.createPause(Duration.ofMillis(holdDurationMs)))
+        drag.addAction(Pause(finger, Duration.ofMillis(holdDurationMs)))
         drag.addAction(
             finger.createPointerMove(
                 Duration.ofMillis(durationMs),

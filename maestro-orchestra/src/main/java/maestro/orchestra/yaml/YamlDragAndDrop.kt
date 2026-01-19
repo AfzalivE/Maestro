@@ -30,8 +30,6 @@ data class YamlDragAndDrop(
 
     fun evaluateScripts(jsEngine: JsEngine): YamlDragAndDrop {
         return copy(
-            from = (from as? YamlElementSelector)?.evaluateScripts(jsEngine) ?: from,
-            to = (to as? YamlElementSelector)?.evaluateScripts(jsEngine) ?: to,
             label = label?.evaluateScripts(jsEngine)
         )
     }
