@@ -1434,11 +1434,32 @@ class Orchestra(
 
     private fun dragAndDropCommand(command: DragAndDropCommand): Boolean {
         val fromElement = findElement(command.from, optional = command.optional)
-        val toElement = findElement(command.to, optional = command.optional)
+        val fromCenter = fromElement.element.bounds.center()
+
+        val offsetString = command.to.offset
+        val endPoint = if (offsetString != null) {
+            // New: calculate offset from 'from' element center
+            val offsetParts = offsetString.split(",").map { it.trim() }
+            require(offsetParts.size == 2) { "offset must be in format 'x, y'" }
+
+            val offsetX = offsetParts[0].toIntOrNull()
+                ?: throw IllegalArgumentException("offset x must be an integer, got: ${offsetParts[0]}")
+            val offsetY = offsetParts[1].toIntOrNull()
+                ?: throw IllegalArgumentException("offset y must be an integer, got: ${offsetParts[1]}")
+
+            Point(
+                x = fromCenter.x + offsetX,
+                y = fromCenter.y + offsetY
+            )
+        } else {
+            // Original: find target element and use center
+            val toElement = findElement(command.to, optional = command.optional)
+            toElement.element.bounds.center()
+        }
 
         maestro.dragAndDrop(
-            startPoint = fromElement.element.bounds.center(),
-            endPoint = toElement.element.bounds.center(),
+            startPoint = fromCenter,
+            endPoint = endPoint,
             durationMs = command.duration,
             holdDurationMs = command.holdDurationMs,
             waitToSettleTimeoutMs = command.waitToSettleTimeoutMs

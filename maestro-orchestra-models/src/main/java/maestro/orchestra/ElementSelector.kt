@@ -42,6 +42,7 @@ data class ElementSelector(
     val focused: Boolean? = null,
     val childOf: ElementSelector? = null,
     val css: String? = null,
+    val offset: String? = null,
 ) {
 
     data class SizeSelector(
@@ -63,6 +64,7 @@ data class ElementSelector(
             index = index?.evaluateScripts(jsEngine),
             childOf = childOf?.evaluateScripts(jsEngine),
             css = css?.evaluateScripts(jsEngine),
+            offset = offset?.evaluateScripts(jsEngine),
         )
     }
 
@@ -148,6 +150,10 @@ data class ElementSelector(
 
         css?.let {
             descriptions.add("CSS: $it")
+        }
+
+        offset?.let {
+            descriptions.add("Offset: $it")
         }
 
         return descriptions.joinToString(", ")
