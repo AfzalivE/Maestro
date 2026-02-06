@@ -592,7 +592,7 @@ internal class MaestroCommandSerializationTest {
     fun `serialize TakeScreenshotCommand`() {
         // given
         val command = MaestroCommand(
-            TakeScreenshotCommand("screenshot.png")
+            TakeScreenshotCommand("screenshot.png", cropOn = ElementSelector(textRegex = "[A-f0-9]"))
         )
 
         // when
@@ -605,6 +605,10 @@ internal class MaestroCommandSerializationTest {
             {
               "takeScreenshotCommand" : {
                 "path" : "screenshot.png",
+                "cropOn" : {
+                  "textRegex" : "[A-f0-9]",
+                  "optional" : false
+                },
                 "optional" : false
               }
             }
